@@ -49,6 +49,8 @@ QUERY_CACHE_SETTINGS = {
     "query_cache_ttl": 1_000_000_000,
     "query_cache_min_query_runs": 0,
     "query_cache_min_query_duration": 0,
+    # Compression makes every hit decompress the full result (4x slower hits on a 3.5M-row result).
+    "query_cache_compress_entries": 0,
 }
 
 

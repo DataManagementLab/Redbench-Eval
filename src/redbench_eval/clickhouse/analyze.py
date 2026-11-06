@@ -58,6 +58,9 @@ def main(results_dir):
                 "dml_s": c.loc[~sel, "runtime_sec"].sum(),
                 "speedup_total": b["runtime_sec"].sum() / c["runtime_sec"].sum(),
                 "speedup_select": b.loc[sel, "runtime_sec"].sum() / c.loc[sel, "runtime_sec"].sum(),
+                # Server CPU time, less sensitive to contention on a shared host than wall time.
+                "cpu_s": c["user_us"].sum() / 1e6,
+                "speedup_cpu": b["user_us"].sum() / c["user_us"].sum(),
                 "mean_rel_runtime": rel.mean(),
                 "median_rel_runtime": rel.median(),
                 "qc_hits": int(c["qc_hits"].fillna(0).sum()),

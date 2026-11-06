@@ -37,6 +37,14 @@ The ClickHouse query cache does not invalidate entries when the underlying table
 is tagged (`query_cache_tag`) and the tags of all cached queries reading a table are dropped
 (`SYSTEM DROP QUERY CACHE TAG`) after each write to it. Invalidation time is not included in the measured runtime.
 
+The query cache must be large enough for the working set. The distinct `SELECT`s of the generation workload
+return 100 GiB of results in total, with 288 results above 100 MiB and the largest at 1.38 GiB. An LRU simulation
+over the baseline query sequence with exact invalidation gives 5,520 hits at 1 GiB and 18,533 at 32 GiB, with no
+further gain above that. The server config therefore uses `max_size_in_bytes` = 32 GiB,
+`max_entry_size_in_bytes` = 2 GiB, and `max_entry_size_in_rows` = 100M. Entries are stored uncompressed
+(`query_cache_compress_entries = 0`): compression makes every hit decompress the full result, which made hits 4x slower
+(0.056 s vs 0.014 s on a 3.5M-row result).
+
 All configurations use `lightweight_delete_mode = 'lightweight_update_force'` and `async_insert = 0`. With the defaults
 (`alter_update` mutations for lightweight deletes, asynchronous inserts that wait for a flush), the sequential
 single-row DML of the matching workload is 28x slower (453.8 s vs 16.0 s for the first 1,000 queries). Tables use
