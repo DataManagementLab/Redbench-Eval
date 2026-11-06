@@ -37,6 +37,9 @@ def main(results_dir):
         if not os.path.isdir(d):
             continue
         runs = {f[4:-8]: pd.read_parquet(os.path.join(d, f)) for f in os.listdir(d) if f.startswith("run_clickhouse") and f.endswith(".parquet")}
+        # Partial results written during a run lack the query_log metrics added when the run finishes.
+        for name in [n for n, r in runs.items() if "user_us" not in r.columns]:
+            print(f"{wl}: {name} is still running ({len(runs.pop(name))} queries so far), skipped")
         if "clickhouse_baseline" not in runs:
             continue
         base = runs["clickhouse_baseline"].set_index("query_idx")
