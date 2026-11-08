@@ -1,0 +1,15 @@
+<!-- Server settings for running Redbench workloads. Put this file into /etc/clickhouse-server/config.d/ and restart the server. -->
+<clickhouse>
+    <!-- The query cache (result cache) must hold the working set: the distinct SELECTs of the generation workload return
+         100 GiB of results in total, with the largest at 1.38 GiB. An LRU simulation with invalidation gives no more
+         hits above 32 GiB. The default (1 GiB, 1 MiB per entry) thrashes and makes SELECTs slower than without the cache. -->
+    <query_cache>
+        <max_size_in_bytes>34359738368</max_size_in_bytes>
+        <max_entries>100000</max_entries>
+        <max_entry_size_in_bytes>2147483648</max_entry_size_in_bytes>
+        <max_entry_size_in_rows>100000000</max_entry_size_in_rows>
+    </query_cache>
+
+    <!-- validate_against_duckdb.py keeps the HTTP connection idle while DuckDB runs a query. -->
+    <keep_alive_timeout>3600</keep_alive_timeout>
+</clickhouse>
