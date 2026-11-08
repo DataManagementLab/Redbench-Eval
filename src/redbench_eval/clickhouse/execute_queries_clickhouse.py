@@ -228,7 +228,7 @@ if __name__ == "__main__":
     p.add_argument("--config", choices=list(CONFIGS), required=True)
     p.add_argument("--out_dir", default=None)
     p.add_argument("--host", default="127.0.0.1")
-    p.add_argument("--port", type=int, default=38123)
+    p.add_argument("--port", type=int, default=8123, help="ClickHouse HTTP port")
     p.add_argument("--database", default="redbench")
     p.add_argument("--timeout", type=int, default=600)
     p.add_argument("--limit", type=int, default=0)

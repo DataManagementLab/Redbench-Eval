@@ -27,13 +27,15 @@ def main():
     p.add_argument("--user_files_rel", required=True)
     p.add_argument("--limit", type=int, default=3000)
     p.add_argument("--database", default="redbench_validate")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8123, help="ClickHouse HTTP port")
     a = p.parse_args()
 
     df = pd.read_csv(a.workload).head(a.limit)
     shutil.copyfile(a.duckdb_file, a.duckdb_copy)
     dk = duckdb.connect(a.duckdb_copy)
     dk.execute("SET enable_progress_bar = false")
-    ch = CH("127.0.0.1", 38123, a.database)
+    ch = CH(a.host, a.port, a.database)
     load_database(ch, a.parquet_dir, a.user_files_rel)
     settings = {"lightweight_delete_mode": "lightweight_update_force", "async_insert": 0, "use_query_cache": 0}
 

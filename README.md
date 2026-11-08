@@ -80,6 +80,21 @@ python src/redbench_eval/duckdb/execute_queries.py \
 **Output:**
 The execution trace will be saved to `{result_dir}/{dataset}/{redset_dataset}/cluster_{cluster_id}/database_{database_id}/{strategy}_{exp_hash}/run_duckdb.parquet`
 
+#### ClickHouse Workload Execution
+
+The ClickHouse executor translates the workloads to ClickHouse SQL, validates the translation against DuckDB, and runs
+the workloads with and without the result cache (query cache) and the predicate cache (query condition cache):
+
+```bash
+python src/redbench_eval/clickhouse/execute_queries_clickhouse.py \
+  --workload ../Redbench/output/paper_workloads/matching/workload.csv \
+  --parquet_dir /var/lib/clickhouse/user_files/imdb_original --user_files_rel imdb_original \
+  --config rescache --out_dir results/matching
+```
+
+The output is `run_clickhouse_<config>.parquet` in `--out_dir`. See [src/redbench_eval/clickhouse/README.md](src/redbench_eval/clickhouse/README.md)
+for setup, the SQL translation, the configurations, and results on the paper workloads.
+
 ### Generating Visualizations
 
 #### Redset Similarity Analysis
